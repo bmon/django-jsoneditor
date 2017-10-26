@@ -13,26 +13,21 @@ django.jQuery(function () {
             if ($nxt.attr("name") == name) {
                 continue;
             }
-            var value = {};
-            try {
-                value = JSON.parse($f[0].value);
-            } catch (e) {
-                // ignore
-            }
+
             $nxt.detach();
             $nxt = django.jQuery('<div cols="40" rows="10" id="' + id + '" name="' + name + '"></div>');
             $f.parent().append($nxt);
-            var fnc = function (f, nxt, value) {
+            var fnc = function (f, nxt) {
                 var editor = new jsoneditor.JSONEditor(nxt, {
-                    change: function () {
-                        f.value = JSON.stringify(editor.get());
+                    onChange: function () {
+                        f.value = editor.getText();
                     },
-                    // modes: ['tree','code'] // is not working properly
-                }, value);
-
+                    mode: 'code',
+                });
+                editor.setText(f.value);
                 return editor;
             };
-            jsonEditors[id] = fnc($f[0], $nxt[0], value);
+            jsonEditors[id] = fnc($f[0], $nxt[0]);
         }
     }, 10);
 });
